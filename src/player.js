@@ -32,7 +32,7 @@ var Player = function() {
 Player.extend(Being);
 
 Player.prototype.act = function() {
-	Game.textBuffer.write("It is your turn, press any relevant key.");
+	//Game.textBuffer.write("It is your turn, press any relevant key.");
 	Game.textBuffer.flush();
 	Game.engine.lock();
 	window.addEventListener("keydown", this);
@@ -52,6 +52,16 @@ Player.prototype.handleEvent = function(e) {
 		window.removeEventListener("keydown", this);
 		Game.engine.unlock();
 	}
+}
+
+Player.prototype.setPosition = function(xy, level) {
+	var entityThere = level.getEntityAt(xy);
+	if (entityThere && entityThere != level._empty) {
+		Game.gold++;
+		Game.textBuffer.write("Found "+entityThere._visual.ch+". Now "+Game.gold+" gold.");
+	}
+	
+	Being.prototype.setPosition.call(this, xy, level);
 }
 
 Player.prototype._handleKey = function(code) {
@@ -74,10 +84,15 @@ Player.prototype._handleKey = function(code) {
 		var redrawNeeded = false;
 		
 		if (this._level.canWalkOn(targetXY)) {
+			//var entity = this._level.getEntityAt(targetXY);
+			//if (entity.canBePickedUp()) {
+			//	Game.textBuffer.write("It is your turn, press any relevant key.");
+			//	Game.textBuffer.flush();
+			//}
+			
 			this._level.setEntity(this, targetXY); /* FIXME collision detection */
 			redrawNeeded = true;
 		} else if (this._level.canDigAt(targetXY)) {
-			console.log("digging!");
 			var wall = this._level.getEntityAt(targetXY);
 			wall.dig();
 			redrawNeeded = true;

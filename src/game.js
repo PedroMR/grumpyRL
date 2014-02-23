@@ -8,6 +8,7 @@ var Game = {
 	display: null,
 	textBuffer: null,
 	hasSeen: null,
+	gold: 0,
 	
 	init: function() {
 		window.addEventListener("load", this);
@@ -28,7 +29,7 @@ var Game = {
 
 				this.scheduler = new ROT.Scheduler.Speed();
 				this.engine = new ROT.Engine(this.scheduler);
-				this.display = new ROT.Display({fontSize:16});
+				this.display = new ROT.Display({fontSize:14});
 				this.textBuffer = new TextBuffer(this.display);
 				document.body.appendChild(this.display.getContainer());
 				this.player = new Player();
@@ -43,11 +44,6 @@ var Game = {
 //				var playerXY = new XY(Math.round(size.x/2), Math.round(size.y/2));
 				this.level.setEntity(this.player, playerXY);
 				
-				for (var i=0; i < 20; i++) {
-					var gold = new Entity({ch:"*", fg:"#cc0"});
-					this.level.setEntity(gold, level.findOpenSpot());
-				}
-				
 				level.computeFOV(playerXY);
 				this._drawLevel();
 				
@@ -61,15 +57,19 @@ var Game = {
 		var visual = entity.getVisual();
 		var canSeeIt = this.level.isVisible(xy) || entity == this.player || OMNISCIENT == true;
 		this.hasSeen[xy] = this.hasSeen[xy] || canSeeIt;
+		if (!this.hasSeen[xy] && canSeeIt) {
+			console.log("eh?");
+		}
 		var hasSeenIt = this.hasSeen[xy];
 		if (hasSeenIt) {
 			var fgColor = visual.fg;
 			//var fgColor = canSeeIt ? visual.fg : "#666";
-			if (!canSeeIt) {
+			if (!canSeeIt)
+			{
 				var rgb1 = ROT.Color.fromString(fgColor);
 				var hsl = ROT.Color.rgb2hsl(rgb1);
-				hsl[1] = (0.3 * hsl[1]);
-				hsl[2] = (0.3 * hsl[2]);
+				hsl[1] = (0.5 * hsl[1]);
+				hsl[2] = (0.5 * hsl[2]);
 				var rgb2 = ROT.Color.hsl2rgb(hsl);
 				fgColor = ROT.Color.toHex(rgb2);
 			}

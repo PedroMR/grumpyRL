@@ -32,11 +32,11 @@ Level.prototype.createMap = function() {
 			var xy = new XY(x,y);
 			var wall = theMap._map[xy];
 			if (wall) {
-				wall._goldChance = Math.max(0, ROT.RNG.getNormal(0.7, 0.3));
+				wall._goldChance = Math.min(1, Math.max(0, ROT.RNG.getNormal(0.7, 0.3)));
 				wall._updateVisual();
 			} else {
 				if (ROT.RNG.getUniform() < 0.3) {
-					var gold = new Being({ch:"%", fg:"#fc0"});
+					var gold = new Being({ch:"%", fg:"#fe0"});
 					theMap.setEntity(gold, xy);
 				}
 			}
@@ -49,7 +49,7 @@ Level.prototype.createMap = function() {
 		return true;
 	    }
 
-	    this._fov = new ROT.FOV.PreciseShadowcasting(lightPasses);	    
+	    this._fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {topology:8});	    
 }
 
 Level.prototype.getSize = function() {
@@ -96,7 +96,7 @@ Level.prototype.setEntity = function(entity, xy) {
 	this._beings[xy] = entity;
 	if (Game.level == this) { 
 		Game.draw(xy); 
-		Game.textBuffer.write("An entity moves to " + xy + ".");
+		//Game.textBuffer.write("An entity moves to " + xy + ".");
 	}
 }
 

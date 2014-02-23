@@ -1,3 +1,5 @@
+var VISIBILITY_RANGE = 20;
+
 var Level = function() {
 	/* FIXME data structure for storing entities */
 	this._beings = {};
@@ -7,17 +9,20 @@ var Level = function() {
 	this._map = {};
 	this._fovRange = {};
 
-	this._empty = new Entity({ch:".", fg:"#888", bg:null});
-	this._wall = new Entity({ch:"#", fg:"#888", bg:null});	
+	this._empty = new Entity({ch:".", fg:"#aaa", bg:null});
+	this._wall = new Entity({ch:"#", fg:"#aaa", bg:null});	
 }
 
 Level.prototype.createMap = function() {
 	var generator = new ROT.Map.Cellular(this._size.x, this._size.y);
-	generator.randomize(0.5);
+	generator.randomize(0.62);
 	var theMap = this;
 	generator.create(function (x,y,value) {
 		if (value == 1) {
-			theMap._map[new XY(x,y)] = theMap._wall;
+			var xy = new XY(x,y);
+			var wall = new Wall();
+			theMap._map[xy] = wall;
+			wall.setPosition(xy, theMap);
 		}
 	});
 	
@@ -27,7 +32,6 @@ Level.prototype.createMap = function() {
 		return true;
 	    }
 
-console.log("new fov");	    
 	    this._fov = new ROT.FOV.PreciseShadowcasting(lightPasses);	    
 }
 
@@ -47,6 +51,18 @@ Level.prototype.findOpenSpot = function() {
 	}
 	console.log("Failed to find an open spot!");
 	return undefined;
+}
+
+Level.prototype.removeEntity = function (entity) {
+	if (entity.getLevel() == this) {
+		var oldXY = entity.getXY();
+		if (this._beings[oldXY] == entity) {
+			delete this._beings[oldXY];
+		}
+		if (this._map[oldXY] == entity) {
+			delete this._map[oldXY];
+		}
+	}
 }
 
 Level.prototype.setEntity = function(entity, xy) {
@@ -71,7 +87,7 @@ Level.prototype.computeFOV = function(xy) {
 	/* output callback */
 	var fovRange = {};
 	this._fovRange = fovRange;
-	this._fov.compute(xy.x, xy.y, 10, function(x, y, r, visibility) {
+	this._fov.compute(xy.x, xy.y, VISIBILITY_RANGE, function(x, y, r, visibility) {
 		fovRange[new XY(x,y)] = r;
 	});
 }
@@ -92,3 +108,20 @@ Level.prototype.getBeings = function() {
 Level.prototype.isEmpty = function(xy) {
 	return !this._map[xy];
 }
+
+Level.prototype.isWithinBounds = function(xy) {
+	return xy.x >= 0 && xy.x < this._size.x && xy.y >= 0 && xy.y < this._size.y;
+}
+
+Level.prototype.canWalkOn = function(xy) {
+	return !this._map[xy] && this.isWithinBounds(xy);
+}
+
+Level.prototype.canDigAt = function(xy) {
+	if (!this.isWithinBounds(xy)) {
+		return false;
+	}
+	var wall = this._map[xy];
+	return wall;
+}
+

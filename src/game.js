@@ -42,10 +42,15 @@ var Game = {
 				var playerXY = level.findOpenSpot();
 //				var playerXY = new XY(Math.round(size.x/2), Math.round(size.y/2));
 				this.level.setEntity(this.player, playerXY);
+				
+				for (var i=0; i < 20; i++) {
+					var gold = new Entity({ch:"*", fg:"#cc0"});
+					this.level.setEntity(gold, level.findOpenSpot());
+				}
+				
 				level.computeFOV(playerXY);
 				this._drawLevel();
-
-
+				
 				this.engine.start();
 			break;
 		}
@@ -54,10 +59,23 @@ var Game = {
 	draw: function(xy) {
 		var entity = this.level.getEntityAt(xy);
 		var visual = entity.getVisual();
-		var canSeeIt = this.level.isVisible(xy) || entity == this.player;
+		var canSeeIt = this.level.isVisible(xy) || entity == this.player || OMNISCIENT == true;
 		this.hasSeen[xy] = this.hasSeen[xy] || canSeeIt;
 		var hasSeenIt = this.hasSeen[xy];
-		this.display.draw(xy.x, xy.y, !hasSeenIt ? " " : visual.ch, canSeeIt ? visual.fg : "#666", visual.bg);
+		if (hasSeenIt) {
+			var fgColor = visual.fg;
+			//var fgColor = canSeeIt ? visual.fg : "#666";
+			if (!canSeeIt) {
+				var rgb1 = ROT.Color.fromString(fgColor);
+				var hsl = ROT.Color.rgb2hsl(rgb1);
+				hsl[1] = (0.3 * hsl[1]);
+				hsl[2] = (0.3 * hsl[2]);
+				var rgb2 = ROT.Color.hsl2rgb(hsl);
+				fgColor = ROT.Color.toHex(rgb2);
+			}
+			var bgColor = visual.bg;
+			this.display.draw(xy.x, xy.y, visual.ch, fgColor, bgColor);
+		}
 	},
 	
 	over: function() {

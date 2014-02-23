@@ -26,6 +26,8 @@ var Player = function() {
 	this._keys[ROT.VK_PERIOD] = -1;
 	this._keys[ROT.VK_CLEAR] = -1;
 	this._keys[ROT.VK_NUMPAD5] = -1;
+	
+	this._keys[ROT.VK_O] = -1;	
 }
 Player.extend(Being);
 
@@ -59,17 +61,33 @@ Player.prototype._handleKey = function(code) {
 		var direction = this._keys[code];
 		if (direction == -1) { /* noop */
 			/* FIXME show something? */
+			if (code == ROT.VK_O) {
+				OMNISCIENT = true;
+			}
+			
 			return true;
 		}
 
 		var dir = ROT.DIRS[8][direction];
 		var targetXY = this._xy.plus(new XY(dir[0], dir[1]));
 
-		if (this._level.isEmpty(targetXY)) {
+		var redrawNeeded = false;
+		
+		if (this._level.canWalkOn(targetXY)) {
 			this._level.setEntity(this, targetXY); /* FIXME collision detection */
-			this._level.computeFOV(targetXY);
+			redrawNeeded = true;
+		} else if (this._level.canDigAt(targetXY)) {
+			console.log("digging!");
+			var wall = this._level.getEntityAt(targetXY);
+			wall.dig();
+			redrawNeeded = true;
+		}
+		
+		if (redrawNeeded) {
+			this._level.computeFOV(this.getXY());
 			Game._drawLevel();
 		}
+		
 		return true;
 	}
 

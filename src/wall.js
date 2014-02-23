@@ -4,7 +4,7 @@ var Wall = function() {
 	Entity.call(this, {ch:"#",fg:"#bbb"});
 
 	this._hp = 2;
-	this._goldChance = Math.max(0, ROT.RNG.getNormal(0, 0.3));
+	this._goldChance = 0;//Math.max(0, ROT.RNG.getNormal(0, 0.3));
 	this._updateVisual();
 }
 Wall.extend(Entity);

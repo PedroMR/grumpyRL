@@ -26,6 +26,23 @@ Level.prototype.createMap = function() {
 		}
 	});
 	
+	generator.randomize(0.4);
+	generator.create(function (x,y,ore) {
+		if (ore == 1) {
+			var xy = new XY(x,y);
+			var wall = theMap._map[xy];
+			if (wall) {
+				wall._goldChance = Math.max(0, ROT.RNG.getNormal(0.7, 0.3));
+				wall._updateVisual();
+			} else {
+				if (ROT.RNG.getUniform() < 0.3) {
+					var gold = new Being({ch:"%", fg:"#fc0"});
+					theMap.setEntity(gold, xy);
+				}
+			}
+		}
+	});
+	
 	var lightPasses = function(x, y) {
 		var key = new XY(x,y);
 		if (key in theMap._map) { return (theMap._map == theMap._empty); }

@@ -26,10 +26,12 @@ var Game = {
 		switch (e.type) {
 			case "load":
 				window.removeEventListener("load", this);
+                
+                HUD.init();
 
 				this.scheduler = new ROT.Scheduler.Speed();
 				this.engine = new ROT.Engine(this.scheduler);
-				this.display = new ROT.Display({fontSize:14});
+				this.display = new ScrollDisplay({fontSize:14});
 				this.textBuffer = new TextBuffer(this.display);
 				document.body.appendChild(this.display.getContainer());
 				this.player = new Player();
@@ -118,7 +120,13 @@ var Game = {
 		for (var p in beings) {
 			this.scheduler.add(beings[p], true);
 		}
-	}
+	},
+    
+    gotGold: function(amount) {
+        Game.gold += amount;
+		Game.textBuffer.write("Found gold! Now "+Game.gold+" gold.");
+        HUD.setGold(Game.gold);
+    }
 }
 
 Game.init();

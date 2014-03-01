@@ -28,6 +28,10 @@ var Player = function() {
 	this._keys[ROT.VK_NUMPAD5] = -1;
 	
 	this._keys[ROT.VK_O] = -1;	
+	this._keys[ROT.VK_W] = -1;	
+	this._keys[ROT.VK_S] = -1;	
+	this._keys[ROT.VK_A] = -1;	
+	this._keys[ROT.VK_D] = -1;	
 }
 Player.extend(Being);
 
@@ -57,8 +61,7 @@ Player.prototype.handleEvent = function(e) {
 Player.prototype.setPosition = function(xy, level) {
 	var entityThere = level.getEntityAt(xy);
 	if (entityThere && entityThere != level._empty) {
-		Game.gold++;
-		Game.textBuffer.write("Found "+entityThere._visual.ch+". Now "+Game.gold+" gold.");
+        Game.gotGold(1);
 	}
 	
 	Being.prototype.setPosition.call(this, xy, level);
@@ -71,10 +74,23 @@ Player.prototype._handleKey = function(code) {
 		var direction = this._keys[code];
 		if (direction == -1) { /* noop */
 			/* FIXME show something? */
-			if (code == ROT.VK_O) {
-				OMNISCIENT = true;
-			}
-			
+            switch(code) {
+                case ROT.VK_O:
+                    OMNISCIENT = !OMNISCIENT;
+                    break;
+                case ROT.VK_W:
+                    Game.display.scroll(0,-1);
+                    break;
+                case ROT.VK_S:
+                    Game.display.scroll(0, 1);
+                    break;
+                case ROT.VK_A:
+                    Game.display.scroll(-1,0);
+                    break;
+                case ROT.VK_D:
+                    Game.display.scroll( 1,0);
+                    break;
+            }			
 			return true;
 		}
 

@@ -16,11 +16,39 @@
 		<script type="text/javascript" src="player.js"></script>
 		<script type="text/javascript" src="level.js"></script>
 		<script type="text/javascript" src="textbuffer.js"></script>
+		<script type="text/javascript" src="hud.js"></script>
+		<script type="text/javascript" src="scrolldisplay.js"></script>
 		<script type="text/javascript" src="game.js"></script>
 		<script>Game.init();</script>
+        
+        <style>
+#grumpy {
+    background-image: url(../img/Grumpy2.png);
+    background-size: 400px;
+    background-repeat: no-repeat;
+    background-position: right top;
+    width: 400px;
+    height: 1000px;
+    position: absolute;
+    float: right;
+    right: 0px;
+    z-index: -1;
+        
+}
+            
+#HUD {
+    background-color: white;
+    float:right;
+}
+                
+        </style>
 	</head>
 	<body>
-		<img style="float:right; width: 400px" src="../img/Grumpy2.png"/>
+        <div id="grumpy"></div>
+        <div id="HUD">
+            <span id="gold">Gold: 0</span>
+        </div>
+		<!--img style="float:right;  width: 400px" src="../img/Grumpy2.png"/-->
 
 	</body>
 </html>

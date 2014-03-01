@@ -3,7 +3,7 @@ var Being = function(visual) {
 
 	this._speed = 100;
 	this._hp = 10;
-}
+};
 Being.extend(Entity);
 
 /**

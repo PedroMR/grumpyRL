@@ -46,6 +46,10 @@ var Game = {
 //				var playerXY = new XY(Math.round(size.x/2), Math.round(size.y/2));
 				this.level.setEntity(this.player, playerXY);
 				
+                var dwarf = new Dwarf("S");
+                var pos = level.findOpenSpot();
+                this.level.setEntity(dwarf, pos);
+                
 				level.computeFOV(playerXY);
 				this._drawLevel();
 				

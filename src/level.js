@@ -59,8 +59,8 @@ Level.prototype.getSize = function() {
 Level.prototype.findOpenSpot = function() {
 	var xy = new XY();
 	for (k=0; k < 1000; k++) {
-		xy.x = Math.round(ROT.RNG.getUniform() * this._size.x);
-		xy.y = Math.round(ROT.RNG.getUniform() * this._size.y);
+		xy.x = Math.floor(ROT.RNG.getUniform() * this._size.x);
+		xy.y = Math.floor(ROT.RNG.getUniform() * this._size.y);
 		
 		if (this.isEmpty(xy)) {
 			return xy;

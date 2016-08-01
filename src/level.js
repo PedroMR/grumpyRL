@@ -1,6 +1,6 @@
 var VISIBILITY_RANGE = 20;
 
-var Level = function() {
+var Level = function () {
 	/* FIXME data structure for storing entities */
 	this._beings = {};
 
@@ -43,13 +43,13 @@ Level.prototype.createMap = function() {
 		}
 	});
 	
-	var lightPasses = function(x, y) {
+    this._lightPassesCb = function(x, y) {
 		var key = new XY(x,y);
 		if (key in theMap._map) { return (theMap._map == theMap._empty); }
 		return true;
-	    }
+    }
 
-	    this._fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {topology:8});	    
+    this._fov = new ROT.FOV.PreciseShadowcasting(this._lightPassesCb, {topology:8});	    
 }
 
 Level.prototype.getSize = function() {
@@ -141,4 +141,5 @@ Level.prototype.canDigAt = function(xy) {
 	var wall = this._map[xy];
 	return wall;
 }
+
 

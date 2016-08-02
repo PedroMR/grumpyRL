@@ -1,5 +1,6 @@
 var Dwarf = function(letter) {
     letter = letter || 'D';
+    this.timeToIdleMove = 2;
 	Being.call(this, {ch:letter, fg:"#5f5"});
 };
 
@@ -31,6 +32,15 @@ Dwarf.prototype.act = function() {
             }
         });
 
+    } else {
+        this.timeToIdleMove--;
+        if (this.timeToIdleMove <= 0) {
+            this.timeToIdleMove = 2;
+            var newPos = new XY(myPos.x, myPos.y);
+            newPos.x += ROT.RNG.getUniformInt(-1, 1);
+            newPos.y += ROT.RNG.getUniformInt(-1, 1);
+            me.moveOrDigTo(newPos);
+        }
     }
     
     

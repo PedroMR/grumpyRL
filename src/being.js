@@ -3,6 +3,8 @@ var Being = function(visual) {
 
 	this._speed = 100;
 	this._hp = 10;
+    this._canDig = false;
+    this._canAttack = false;
 };
 Being.extend(Entity);
 
@@ -37,19 +39,26 @@ Being.prototype.setPosition = function(xy, level) {
 
 Being.prototype.moveOrDigTo = function(targetXY) {
     var redrawNeeded = false;
-    if (this._level.canWalkOn(targetXY)) {
-        //var entity = this._level.getEntityAt(targetXY);
-        //if (entity.canBePickedUp()) {
-        //	Game.textBuffer.write("It is your turn, press any relevant key.");
-        //	Game.textBuffer.flush();
-        //}
-
-        this._level.setEntity(this, targetXY); /* FIXME collision detection */
+    var level = this._level;
+    
+    if (level.canWalkOn(targetXY)) {
+        level.setEntity(this, targetXY); /* FIXME collision detection */
         redrawNeeded = true;
-    } else if (this._level.canDigAt(targetXY)) {
-        var wall = this._level.getEntityAt(targetXY);
+    } else if (level.canDigAt(targetXY) && this._canDig) {
+        var wall = level.getEntityAt(targetXY);
         wall.dig();
         redrawNeeded = true;
+    } else {
+        var entity = level.getEntityAt(targetXY);
+//        console.log("checking attack against "+entity.getVisual().ch);
+        if (entity instanceof Dwarf) console.log("DWARF! "+this._canAttack+" hp "+entity._hp);
+        if (this._canAttack && entity._hp > 0 && entity instanceof Being) {
+            var dmg = this._damage;
+            Game.textBuffer.write(this.name+" attacks "+entity.name+" for "+dmg+" damage!");
+            entity.sufferDamage(dmg);
+            console.log("attack!");
+            redrawNeeded = true;            
+        }
     }
 
     if (redrawNeeded) {
@@ -59,6 +68,18 @@ Being.prototype.moveOrDigTo = function(targetXY) {
     
 }
 
+Being.prototype.sufferDamage = function(amount) {
+	if (this._hp > 0) {		
+		this._hp -= amount;
+		
+		if (this._hp <= 0) {
+            //died!
+            Game.textBuffer.write(this.name+" dies!");
+            Game.onDeath(this);
+			this._level.removeEntity(this);
+        }
+    }
+}
 
 Being.prototype.blocksMovementOf = function(otherEntity) {
     return true;

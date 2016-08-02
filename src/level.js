@@ -5,7 +5,7 @@ var Level = function () {
 	this._beings = {};
 
 	/* FIXME map data */
-	this._size = new XY(200, 125);
+	this._size = new XY(80, 25);
 	this._map = {};
 	this._fovRange = {};
 
@@ -86,6 +86,8 @@ Level.prototype.removeEntity = function (entity) {
 		if (this._map[oldXY] == entity) {
 			delete this._map[oldXY];
 		}
+        
+        Game.scheduler.remove(entity);
 	}
 }
 

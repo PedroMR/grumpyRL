@@ -1,17 +1,31 @@
 var Dwarf = function(letter) {
     letter = letter || 'D';
-    this.timeToIdleMove = 2;
 	Being.call(this, {ch:letter, fg:"#5f5"});
+    this.timeToIdleMove = ROT.RNG.getUniformInt(3, 7);
+    this._fov = null;
+    this._canDig = true;
+    this._sufferedDamage = false;
+    this.name = "Dwarf";
+
 };
 
 Dwarf.extend(Being);
 
 Dwarf.prototype.act = function() {
+    this._sufferedDamage = false;
+    this._visual.bg = "#000";
+    this._visual.fg = "#5f5";
     
     var level = this._level;
     var myPos = this._xy;
     
-//    if (!this._goldTarget)
+    if (this._goldTarget) {
+        var wall = level._map[this._goldTarget];
+        if (!wall || wall._goldChance <= 0 || wall._hp <= 0)
+            this._goldTarget = null;
+    }
+    
+    if (!this._goldTarget)
         this._goldTarget = this.findGoldNear(myPos);
     
     var gold = this._goldTarget;
@@ -35,7 +49,7 @@ Dwarf.prototype.act = function() {
     } else {
         this.timeToIdleMove--;
         if (this.timeToIdleMove <= 0) {
-            this.timeToIdleMove = 2;
+            this.timeToIdleMove = ROT.RNG.getUniformInt(3, 7);;
             var newPos = new XY(myPos.x, myPos.y);
             newPos.x += ROT.RNG.getUniformInt(-1, 1);
             newPos.y += ROT.RNG.getUniformInt(-1, 1);
@@ -48,16 +62,26 @@ Dwarf.prototype.act = function() {
     
 }
 
+Dwarf.prototype.sufferDamage = function (amount) {
+    this._sufferedDamage = true;
+    this._visual.bg = "#F55";
+    
+    Being.prototype.sufferDamage.call(this, amount);
+}
+
 Dwarf.prototype.findGoldNear = function(xy) {
     var level = this._level;
     
 	if (!level.isWithinBounds(xy)) {
 		return false;
 	}
+    
+    if (!this._fov)
+         this._fov = new ROT.FOV.PreciseShadowcasting(level._lightPassesCb, {topology:8});
 
     var theMap = level;
     var foundGoldAt = false;
-    var fov = new ROT.FOV.PreciseShadowcasting(level._lightPassesCb, {topology:8});
+    var fov = this._fov;
     fov.compute(xy.x, xy.y, 10, function (x, y, r, visibility) {
 		var key = new XY(x,y);
 		if (key in theMap._map) {

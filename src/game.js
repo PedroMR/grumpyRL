@@ -13,6 +13,7 @@ var Game = {
 	hasSeen: null,
     viewportCenter: null,
     viewportSize: null,
+    dwarves: 6,
 	gold: 0,
 	
 	init: function () {
@@ -57,13 +58,23 @@ var Game = {
 				this.level.setEntity(this.player, playerXY);
                 this.viewportCenter = playerXY;
 				
-                for (var n=0; n <= 6; n++) {
+                for (var n=0; n < this.dwarves; n++) {
                     var dwarf = new Dwarf("D");
                     var pos = level.findOpenSpot();
                     var tries = 1000;
                     while (pos.dist4(playerXY) > 8 && tries-- > 0)
                         pos = level.findOpenSpot();
                     this.level.setEntity(dwarf, pos);
+                }
+                HUD.setDwarves(this.dwarves);
+                
+                for (var n=0; n <= 16; n++) {
+                    var goblin = new Goblin();
+                    var pos = level.findOpenSpot();
+                    var tries = 1000;
+                    while (pos.dist4(playerXY) < 8 && tries-- > 0)
+                        pos = level.findOpenSpot();
+                    this.level.setEntity(goblin, pos);
                 }
                 
 				level.computeFOV();
@@ -151,6 +162,19 @@ var Game = {
         Game.gold += amount;
 		Game.textBuffer.write("Found gold! Now "+Game.gold+" gold.");
         HUD.setGold(Game.gold);
+    },
+    
+    onDeath: function(entity) {
+        this.level.removeEntity(entity);
+        if (entity instanceof Dwarf) {
+            this.dwarves--;
+            HUD.setDwarves(this.dwarves);
+            
+            if (this.dwarves == 0) {
+                this.textBuffer.write("\nGAME OVER!");
+            }
+        }
+
     }
 }
 

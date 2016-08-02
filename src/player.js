@@ -1,6 +1,13 @@
 var Player = function() {
 	Being.call(this, {ch:"@", fg:"#fff"});
 	
+    this._speed = 200;
+    this._canDig = true;
+    this._canAttack = true;
+    this.name = "Grumpy";
+    this._damage = 5;
+    this._hp = 100;
+    
 	this._keys = {};
 	this._keys[ROT.VK_K] = 0;
 	this._keys[ROT.VK_UP] = 0;

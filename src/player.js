@@ -101,6 +101,8 @@ Player.prototype._handleKey = function(code) {
 		
         this.moveOrDigTo(targetXY);
 		
+        Game.viewportCenter = this.getXY();
+        
 		return true;
 	}
 

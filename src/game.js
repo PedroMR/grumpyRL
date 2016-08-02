@@ -1,3 +1,6 @@
+/*jslint node: true */
+"use strict";
+
 var OMNISCIENT = false;
 
 var Game = {
@@ -8,9 +11,11 @@ var Game = {
 	display: null,
 	textBuffer: null,
 	hasSeen: null,
+    viewportCenter: null,
+    viewportSize: null,
 	gold: 0,
 	
-	init: function() {
+	init: function () {
 		window.addEventListener("load", this);
 		document.onkeydown = function(evt) {
 			evt = evt || window.event;
@@ -29,6 +34,9 @@ var Game = {
                 
                 HUD.init();
 
+                this.viewportSize = new XY(80, 25);
+                this.viewportCenter = new XY(0, 0);
+
 				this.scheduler = new ROT.Scheduler.Speed();
 				this.engine = new ROT.Engine(this.scheduler);
 				this.display = new ScrollDisplay({fontSize:14});
@@ -42,14 +50,21 @@ var Game = {
 				level.createMap();
 				var size = level.getSize();
 				this._switchLevel(level);
+                
 				var playerXY = level.findOpenSpot();
-//				var playerXY = new XY(Math.round(size.x/2), Math.round(size.y/2));
+                
                 this.level.setPlayerEntity(this.player);
 				this.level.setEntity(this.player, playerXY);
+                this.viewportCenter = playerXY;
 				
-                var dwarf = new Dwarf("S");
-                var pos = level.findOpenSpot();
-                this.level.setEntity(dwarf, pos);
+                for (var n=0; n <= 6; n++) {
+                    var dwarf = new Dwarf("D");
+                    var pos = level.findOpenSpot();
+                    var tries = 1000;
+                    while (pos.dist4(playerXY) > 8 && tries-- > 0)
+                        pos = level.findOpenSpot();
+                    this.level.setEntity(dwarf, pos);
+                }
                 
 				level.computeFOV();
 				this._drawLevel();
@@ -60,9 +75,12 @@ var Game = {
 	},
 
 	draw: function(xy) {
+        var drawX = xy.x + this.viewportSize.x/2 - this.viewportCenter.x; 
+        var drawY = xy.y + this.viewportSize.y/2 - this.viewportCenter.y; 
+        
 		var entity = this.level.getEntityAt(xy);
 		var visual = entity.getVisual();
-		var canSeeIt = this.level.isVisible(xy) || entity == this.player || OMNISCIENT == true;
+		var canSeeIt = this.level.isVisible(xy) || entity == this.player || OMNISCIENT == true || entity instanceof Dwarf;
 		this.hasSeen[xy] = this.hasSeen[xy] || canSeeIt;
 		if (!this.hasSeen[xy] && canSeeIt) {
 			console.log("eh?");
@@ -81,8 +99,10 @@ var Game = {
 				fgColor = ROT.Color.toHex(rgb2);
 			}
 			var bgColor = visual.bg;
-			this.display.draw(xy.x, xy.y, visual.ch, fgColor, bgColor);
-		}
+			this.display.draw(drawX, drawY, visual.ch, fgColor, bgColor);
+		} else {
+            this.display.draw(drawX, drawY, " ");
+        }
 	},
 	
 	over: function() {
@@ -91,13 +111,13 @@ var Game = {
 	},
 	
 	_drawLevel: function() {
-		var size = this.level.getSize();
-		/* FIXME draw a level */
-		var xy = new XY();
+		var size = this.viewportSize;
+
+        var xy = new XY();
 		for (var i=0;i<size.x;i++) {
-			xy.x = i;
+			xy.x = i + this.viewportCenter.x - Math.floor(this.viewportSize.x/2);
 			for (var j=0;j<size.y;j++) {
-				xy.y = j;
+				xy.y = j + this.viewportCenter.y - Math.floor(this.viewportSize.y/2);
 				this.draw(xy);
 			}
 		}
@@ -109,7 +129,7 @@ var Game = {
 		this.scheduler.clear(); 
 
 		this.level = level;
-		var size = this.level.getSize();
+		var size = this.viewportSize;
 
 		var bufferSize = 3;
 		this.display.setOptions({width:size.x, height:size.y + bufferSize});

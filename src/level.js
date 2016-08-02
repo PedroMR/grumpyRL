@@ -5,7 +5,7 @@ var Level = function () {
 	this._beings = {};
 
 	/* FIXME map data */
-	this._size = new XY(80, 25);
+	this._size = new XY(200, 125);
 	this._map = {};
 	this._fovRange = {};
 
@@ -16,7 +16,7 @@ var Level = function () {
 
 Level.prototype.createMap = function() {
 	var generator = new ROT.Map.Cellular(this._size.x, this._size.y);
-	generator.randomize(0.62);
+	generator.randomize(0.52);
 	var theMap = this;
 	generator.create(function (x,y,value) {
 		if (value == 1) {
@@ -69,7 +69,7 @@ Level.prototype.findOpenSpot = function() {
 		xy.x = Math.floor(ROT.RNG.getUniform() * this._size.x);
 		xy.y = Math.floor(ROT.RNG.getUniform() * this._size.y);
 		
-		if (this.isEmpty(xy)) {
+		if (this.isEmpty(xy) && this.getEntityAt(xy) == this._empty) {
 			return xy;
 		}
 	}
@@ -126,6 +126,7 @@ Level.prototype.isVisible = function (xy) {
 }
 
 Level.prototype.getEntityAt = function(xy) {
+    if (!this.isWithinBounds(xy)) return this._wall;
 	return this._beings[xy] || this._map[xy] || this._empty;
 }
 

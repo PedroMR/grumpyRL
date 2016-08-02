@@ -16,7 +16,7 @@ Dwarf.prototype.act = function() {
     
     var gold = this._goldTarget;
     var me = this;
-	Game.textBuffer.write("Dwarf at "+this._xy+" sees gold at "+gold);
+//	Game.textBuffer.write("Dwarf at "+this._xy+" sees gold at "+gold);
     if (gold) {
         var passableCallback = level._dwarfMayMoveCb;
         var nav = new ROT.Path.AStar(gold.x, gold.y, passableCallback, {topology:8});
@@ -25,7 +25,7 @@ Dwarf.prototype.act = function() {
             count++;
             if (count == 2) {
                 var newPos = new XY(x, y);
-                Game.textBuffer.write("Moving to "+newPos);
+//                Game.textBuffer.write("Moving to "+newPos);
                 me.moveOrDigTo(newPos);
 //                level.setEntity(me, newPos);
 //                me.setPosition(, level);

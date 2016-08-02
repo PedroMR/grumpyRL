@@ -1,3 +1,6 @@
+var TEAM_ENEMY = "enemy";
+var TEAM_PLAYER = "player";
+
 var Being = function(visual) {
 	Entity.call(this, visual);
 
@@ -51,8 +54,8 @@ Being.prototype.moveOrDigTo = function(targetXY) {
     } else {
         var entity = level.getEntityAt(targetXY);
 //        console.log("checking attack against "+entity.getVisual().ch);
-        if (entity instanceof Dwarf) console.log("DWARF! "+this._canAttack+" hp "+entity._hp);
-        if (this._canAttack && entity._hp > 0 && entity instanceof Being) {
+//        if (entity instanceof Dwarf) console.log("DWARF! "+this._canAttack+" hp "+entity._hp);
+        if (this._canAttack && entity._team != this._team && entity._hp > 0 && entity instanceof Being) {
             var dmg = this._damage;
             Game.textBuffer.write(this.name+" attacks "+entity.name+" for "+dmg+" damage!");
             entity.sufferDamage(dmg);
@@ -76,7 +79,6 @@ Being.prototype.sufferDamage = function(amount) {
             //died!
             Game.textBuffer.write(this.name+" dies!");
             Game.onDeath(this);
-			this._level.removeEntity(this);
         }
     }
 }

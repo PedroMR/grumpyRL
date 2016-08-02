@@ -6,6 +6,7 @@ var Dwarf = function(letter) {
     this._canDig = true;
     this._sufferedDamage = false;
     this.name = "Dwarf";
+    this._team = TEAM_PLAYER;
 
 };
 

@@ -56,6 +56,12 @@ Level.prototype.createMap = function() {
 		return true;
     }
 
+    this._goblinMayMoveCb = function(x, y) {
+		var key = new XY(x,y);
+		if (key in theMap._map) { return theMap.canWalkOn(key); }
+		return true;
+    }
+
     this._fov = new ROT.FOV.PreciseShadowcasting(this._lightPassesCb, {topology:8});	    
 }
 

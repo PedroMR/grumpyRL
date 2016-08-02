@@ -6,6 +6,7 @@ var Goblin = function(letter) {
     this._fov = null;
     this._canAttack = true;
     this._damage = 1;
+    this._team = TEAM_ENEMY;
 };
 
 Goblin.extend(Being);
@@ -28,20 +29,18 @@ Goblin.prototype.act = function() {
         var entity = level.getEntityAt(aXY);
         if (entity instanceof Dwarf && r < targetR) {
             target = entity.getXY();;
-            console.log("G at "+myPos+" found D at "+target+", r "+r);
             targetR = r;
         }
     });
     
     if (target) {
-        var passableCallback = level._dwarfMayMoveCb;
+        var passableCallback = level._goblinMayMoveCb;
         var nav = new ROT.Path.AStar(target.x, target.y, passableCallback, {topology:8});
         var count = 0;
         nav.compute(myPos.x, myPos.y, function(x,y) {
             count++;
             if (count == 2) {
                 var newPos = new XY(x, y);
-                console.log("G at "+myPos+" moving to "+newPos);
                 me.moveOrDigTo(newPos);
             }
         });

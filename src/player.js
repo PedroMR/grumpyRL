@@ -7,6 +7,7 @@ var Player = function() {
     this.name = "Grumpy";
     this._damage = 5;
     this._hp = 100;
+    this._team = TEAM_PLAYER;
     
 	this._keys = {};
 	this._keys[ROT.VK_K] = 0;

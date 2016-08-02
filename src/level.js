@@ -10,6 +10,7 @@ var Level = function () {
 	this._fovRange = {};
 
 	this._empty = new Entity({ch:".", fg:"#aaa", bg:null});
+    this._empty.blocksMovementOf = function (e) { return false };
 	this._wall = new Entity({ch:"#", fg:"#aaa", bg:null});	
 }
 
@@ -36,7 +37,7 @@ Level.prototype.createMap = function() {
 				wall._updateVisual();
 			} else {
 				if (ROT.RNG.getUniform() < 0.3) {
-					var gold = new Being({ch:"%", fg:"#fe0"});
+					var gold = new Treasure("%");
 					theMap.setEntity(gold, xy);
 				}
 			}
@@ -46,6 +47,12 @@ Level.prototype.createMap = function() {
     this._lightPassesCb = function(x, y) {
 		var key = new XY(x,y);
 		if (key in theMap._map) { return (theMap._map == theMap._empty); }
+		return true;
+    }
+
+    this._dwarfMayMoveCb = function(x, y) {
+		var key = new XY(x,y);
+		if (key in theMap._map) { return theMap.canWalkOn(key); }
 		return true;
     }
 
@@ -100,8 +107,13 @@ Level.prototype.setEntity = function(entity, xy) {
 	}
 }
 
-Level.prototype.computeFOV = function(xy) {				
+Level.prototype.setPlayerEntity = function(player) {
+    this._player = player;
+}
+
+Level.prototype.computeFOV = function() {				
 	/* output callback */
+    var xy = this._player._xy;
 	var fovRange = {};
 	this._fovRange = fovRange;
 	this._fov.compute(xy.x, xy.y, VISIBILITY_RANGE, function(x, y, r, visibility) {
@@ -130,15 +142,23 @@ Level.prototype.isWithinBounds = function(xy) {
 	return xy.x >= 0 && xy.x < this._size.x && xy.y >= 0 && xy.y < this._size.y;
 }
 
-Level.prototype.canWalkOn = function(xy) {
+Level.prototype.canWalkOn = function(xy, entity) {
+    var otherEntity = this.getEntityAt(xy);
+    if (otherEntity && otherEntity.blocksMovementOf(entity))
+        return false;
+    
 	return !this._map[xy] && this.isWithinBounds(xy);
 }
 
-Level.prototype.canDigAt = function(xy) {
+Level.prototype.canDigAt = function(xy, entity) {
 	if (!this.isWithinBounds(xy)) {
 		return false;
 	}
-	var wall = this._map[xy];
+    var otherEntity = this.getEntityAt(xy);
+    if (otherEntity && otherEntity.blocksMovementOf(entity))
+        return false;
+    
+    var wall = this._map[xy];
 	return wall;
 }
 

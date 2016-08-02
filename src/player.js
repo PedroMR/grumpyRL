@@ -99,28 +99,11 @@ Player.prototype._handleKey = function(code) {
 
 		var redrawNeeded = false;
 		
-		if (this._level.canWalkOn(targetXY)) {
-			//var entity = this._level.getEntityAt(targetXY);
-			//if (entity.canBePickedUp()) {
-			//	Game.textBuffer.write("It is your turn, press any relevant key.");
-			//	Game.textBuffer.flush();
-			//}
-			
-			this._level.setEntity(this, targetXY); /* FIXME collision detection */
-			redrawNeeded = true;
-		} else if (this._level.canDigAt(targetXY)) {
-			var wall = this._level.getEntityAt(targetXY);
-			wall.dig();
-			redrawNeeded = true;
-		}
-		
-		if (redrawNeeded) {
-			this._level.computeFOV(this.getXY());
-			Game._drawLevel();
-		}
+        this.moveOrDigTo(targetXY);
 		
 		return true;
 	}
 
 	return false; /* unknown key */
 }
+

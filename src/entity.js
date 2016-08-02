@@ -16,6 +16,10 @@ Entity.prototype.getLevel = function() {
 	return this._level;
 }
 
+Entity.prototype.blocksMovementOf = function(otherEntity) {
+    return false;
+}
+
 Entity.prototype.setPosition = function(xy, level) {
 	this._xy = xy;
 	this._level = level;

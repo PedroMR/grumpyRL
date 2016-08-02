@@ -18,7 +18,7 @@ Wall.prototype.dig = function() {
 			this._level.removeEntity(this);
 			
 			if (ROT.RNG.getUniform() < this._goldChance) {
-				var ore = new Entity({ch:"*", fg:"#fe0"});
+				var ore = new Treasure("*");
 				this._level.setEntity(ore, this.getXY());
 			}
 		}

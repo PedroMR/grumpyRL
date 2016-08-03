@@ -58,8 +58,10 @@ var Game = {
 				this.level.setEntity(this.player, playerXY);
                 this.viewportCenter = playerXY;
 				
+                var names = ["Sleepy", "Dopey", "Doc", "Bashful", "Sneezy", "Happy"];
+                var letters = "SODBNH";
                 for (var n=0; n < this.dwarves; n++) {
-                    var dwarf = new Dwarf("D");
+                    var dwarf = new Dwarf(letters[n], names[n]);
                     var pos = level.findOpenSpot();
                     var tries = 1000;
                     while (pos.dist4(playerXY) > 8 && tries-- > 0)

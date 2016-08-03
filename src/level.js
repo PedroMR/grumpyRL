@@ -144,7 +144,7 @@ Level.prototype.getBeings = function() {
 }
 
 Level.prototype.isEmpty = function(xy) {
-	return !this._map[xy];
+	return !this._map[xy] && !this._beings[xy];
 }
 
 Level.prototype.isWithinBounds = function(xy) {

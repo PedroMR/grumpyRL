@@ -6,6 +6,7 @@ var Player = function() {
     this._canAttack = true;
     this.name = "Grumpy";
     this._damage = 5;
+    this._canPush = true;
     this._hp = 100;
     this._team = TEAM_PLAYER;
     

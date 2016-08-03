@@ -55,13 +55,28 @@ Being.prototype.moveOrDigTo = function(targetXY) {
         var entity = level.getEntityAt(targetXY);
 //        console.log("checking attack against "+entity.getVisual().ch);
 //        if (entity instanceof Dwarf) console.log("DWARF! "+this._canAttack+" hp "+entity._hp);
-        if (this._canAttack && entity._team != this._team && entity._hp > 0 && entity instanceof Being) {
-            var dmg = this._damage;
-            Game.textBuffer.write(this.name+" attacks "+entity.name+" for "+dmg+" damage!");
-            entity.sufferDamage(dmg);
-            console.log("attack!");
-            redrawNeeded = true;            
+        
+        if (entity instanceof Being && entity._hp > 0) {
+            var sameTeam = entity._team == this._team;
+            if (this._canAttack && !sameTeam) {
+                var dmg = this._damage;
+                Game.textBuffer.write(this.name+" attacks "+entity.name+" for "+dmg+" damage!");
+                entity.sufferDamage(dmg);
+                console.log("attack!");
+                redrawNeeded = true;            
+            } else if (this._canPush && sameTeam) {
+                var delta = targetXY.minus(this.getXY());
+                var finalPos = targetXY.plus(delta);
+                if (level.isEmpty(finalPos) && level.isWithinBounds(finalPos)) {
+                    level.setEntity(entity, finalPos);
+                    level.setEntity(this, targetXY);
+                    redrawNeeded = true;
+                }
+            }    
         }
+        
+        
+        
     }
 
     if (redrawNeeded) {

@@ -1,11 +1,11 @@
-var Dwarf = function(letter) {
+var Dwarf = function(letter, name) {
     letter = letter || 'D';
 	Being.call(this, {ch:letter, fg:"#5f5"});
     this.timeToIdleMove = ROT.RNG.getUniformInt(3, 7);
     this._fov = null;
     this._canDig = true;
     this._sufferedDamage = false;
-    this.name = "Dwarf";
+    this.name = name || "Dwarf";
     this._team = TEAM_PLAYER;
 
 };

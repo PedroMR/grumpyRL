@@ -3,6 +3,7 @@ var VISIBILITY_RANGE = 20;
 var Level = function () {
 	/* FIXME data structure for storing entities */
 	this._beings = {};
+    this._things = {};
 
 	/* FIXME map data */
 	this._size = new XY(80, 25);
@@ -135,7 +136,9 @@ Level.prototype.isVisible = function (xy) {
 
 Level.prototype.getEntityAt = function(xy) {
     if (!this.isWithinBounds(xy)) return this._wall;
-	return this._beings[xy] || this._map[xy] || this._empty;
+    var thingsAt = this.getThingsAt(xy);
+    var thing = (thingsAt != null && thingsAt.length > 0) ? thingsAt[0] : null;
+	return this._beings[xy] || thing || this._map[xy] || this._empty;
 }
 
 Level.prototype.getBeings = function() {
@@ -171,4 +174,22 @@ Level.prototype.canDigAt = function(xy, entity) {
 	return wall;
 }
 
+Level.prototype.addThing = function(xy, thing) {
+	if (!this.isWithinBounds(xy)) {
+		return false;
+	}
+    var things = this.getThingsAt(xy);
+    if (!things) {
+        things = [];
+        this._things[xy] = things;
+    }
+    things.push(thing);
+}
 
+Level.prototype.getThingsAt = function(xy) {
+	if (!this.isWithinBounds(xy)) {
+		return false;
+	}
+    
+    return this._things[xy];
+}

@@ -58,6 +58,8 @@ var Game = {
 				this.level.setEntity(this.player, playerXY);
                 this.viewportCenter = playerXY;
 				
+                level.addThing(playerXY, new Corpse("p", "Ppppp"));
+                
                 var names = ["Sleepy", "Dopey", "Doc", "Bashful", "Sneezy", "Happy"];
                 var letters = "SODBNH";
                 for (var n=0; n < this.dwarves; n++) {
@@ -167,8 +169,11 @@ var Game = {
     },
     
     onDeath: function(entity) {
+        var corpse = new Corpse(entity._visual.ch, entity.name);
+        this.level.setEntity(corpse, entity.getXY());
         this.level.removeEntity(entity);
-        if (entity instanceof Dwarf) {
+
+        if (entity instanceof Dwarf) {        
             this.dwarves--;
             HUD.setDwarves(this.dwarves);
             

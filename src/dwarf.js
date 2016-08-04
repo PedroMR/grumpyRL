@@ -67,7 +67,7 @@ Dwarf.prototype.sufferDamage = function (amount) {
     this._sufferedDamage = true;
     this._visual.bg = "#F55";
     
-    Being.prototype.sufferDamage.call(this, amount);
+    Being.prototype.sufferDamage.call(this, amount);    
 }
 
 Dwarf.prototype.findGoldNear = function(xy) {

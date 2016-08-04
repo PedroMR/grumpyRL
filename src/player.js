@@ -14,33 +14,41 @@ var Player = function() {
 	this._keys[ROT.VK_K] = 0;
 	this._keys[ROT.VK_UP] = 0;
 	this._keys[ROT.VK_NUMPAD8] = 0;
+	this._keys[ROT.VK_W] = 0;
 	this._keys[ROT.VK_U] = 1;
+	this._keys[ROT.VK_E] = 1;
 	this._keys[ROT.VK_NUMPAD9] = 1;
 	this._keys[ROT.VK_L] = 2;
 	this._keys[ROT.VK_RIGHT] = 2;
+	this._keys[ROT.VK_D] = 2;
 	this._keys[ROT.VK_NUMPAD6] = 2;
 	this._keys[ROT.VK_N] = 3;
+	this._keys[ROT.VK_C] = 3;
 	this._keys[ROT.VK_NUMPAD3] = 3;
 	this._keys[ROT.VK_J] = 4;
 	this._keys[ROT.VK_DOWN] = 4;
 	this._keys[ROT.VK_NUMPAD2] = 4;
+	this._keys[ROT.VK_X] = 4;
 	this._keys[ROT.VK_B] = 5;
 	this._keys[ROT.VK_NUMPAD1] = 5;
+	this._keys[ROT.VK_Z] = 5;
 	this._keys[ROT.VK_H] = 6;
 	this._keys[ROT.VK_LEFT] = 6;
 	this._keys[ROT.VK_NUMPAD4] = 6;
+	this._keys[ROT.VK_A] = 6;
 	this._keys[ROT.VK_Y] = 7;
 	this._keys[ROT.VK_NUMPAD7] = 7;
+	this._keys[ROT.VK_Q] = 7;
 
 	this._keys[ROT.VK_PERIOD] = -1;
 	this._keys[ROT.VK_CLEAR] = -1;
 	this._keys[ROT.VK_NUMPAD5] = -1;
 	
 	this._keys[ROT.VK_O] = -1;	
-	this._keys[ROT.VK_W] = -1;	
 	this._keys[ROT.VK_S] = -1;	
-	this._keys[ROT.VK_A] = -1;	
-	this._keys[ROT.VK_D] = -1;	
+//	this._keys[ROT.VK_W] = -1;	
+//	this._keys[ROT.VK_A] = -1;	
+//	this._keys[ROT.VK_D] = -1;	
 }
 Player.extend(Being);
 
@@ -88,18 +96,18 @@ Player.prototype._handleKey = function(code) {
                 case ROT.VK_O:
                     OMNISCIENT = !OMNISCIENT;
                     break;
-                case ROT.VK_W:
-                    Game.display.scroll(0,-1);
-                    break;
-                case ROT.VK_S:
-                    Game.display.scroll(0, 1);
-                    break;
-                case ROT.VK_A:
-                    Game.display.scroll(-1,0);
-                    break;
-                case ROT.VK_D:
-                    Game.display.scroll( 1,0);
-                    break;
+//                case ROT.VK_W:
+//                    Game.display.scroll(0,-1);
+//                    break;
+//                case ROT.VK_S:
+//                    Game.display.scroll(0, 1);
+//                    break;
+//                case ROT.VK_A:
+//                    Game.display.scroll(-1,0);
+//                    break;
+//                case ROT.VK_D:
+//                    Game.display.scroll( 1,0);
+//                    break;
             }			
 			return true;
 		}

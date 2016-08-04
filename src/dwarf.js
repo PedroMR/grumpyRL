@@ -1,3 +1,5 @@
+var DWARF_GOLD_VISIBILITY = 8;
+
 var Dwarf = function(letter, name) {
     letter = letter || 'D';
 	Being.call(this, {ch:letter, fg:"#5f5"});
@@ -9,10 +11,13 @@ var Dwarf = function(letter, name) {
     this._team = TEAM_PLAYER;
 
 };
-
 Dwarf.extend(Being);
 
+Dwarf.prototype.blocksMovementOf = function(ent) {
+    return Being.prototype.blocksMovementOf.call(this, ent);
+}
 Dwarf.prototype.act = function() {
+    var hasSufferedDamage = this._sufferedDamage;
     this._sufferedDamage = false;
     this._visual.bg = "#000";
     this._visual.fg = "#5f5";
@@ -33,9 +38,9 @@ Dwarf.prototype.act = function() {
     var me = this;
 //	Game.textBuffer.write("Dwarf at "+this._xy+" sees gold at "+gold);
     var passableCallback = level._dwarfMayMoveCb;
-    if (gold) {
+    if (gold && !hasSufferedDamage) {
         this._visual.fg = "#FF0";
-        var nav = new ROT.Path.AStar(gold.x, gold.y, passableCallback, {topology:8});
+        var nav = new ROT.Path.Dijkstra(gold.x, gold.y, passableCallback, {topology:8});
         var count = 0;
         nav.compute(myPos.x, myPos.y, function(x,y) {
             count++;
@@ -43,11 +48,17 @@ Dwarf.prototype.act = function() {
                 var newPos = new XY(x, y);
                 me.moveOrDigTo(newPos);
             }
+            
+            if (Game.debugSelectedDwarf == this) {
+                var dx = x + Game.viewportSize.x/2 - Game.viewportCenter.x;
+                var dy = y + Game.viewportSize.y/2 - Game.viewportCenter.y;
+                Game.display.draw(dx, dy, '', '', '#800');
+            }
         });
 
     } else {
         var playerPos = this._level.getPlayerEntity().getXY();
-        if (playerPos.dist8(myPos) > 5) {
+        if (playerPos.dist8(myPos) > 5 || hasSufferedDamage) {
             this._visual.fg = "#5FD";
             var nav = new ROT.Path.AStar(playerPos.x, playerPos.y, passableCallback, {topology:8});
             var count = 0;
@@ -95,7 +106,7 @@ Dwarf.prototype.findGoldNear = function(xy) {
     var theMap = level;
     var foundGoldAt = false;
     var fov = this._fov;
-    fov.compute(xy.x, xy.y, 10, function (x, y, r, visibility) {
+    fov.compute(xy.x, xy.y, DWARF_GOLD_VISIBILITY, function (x, y, r, visibility) {
 		var key = new XY(x,y);
 		if (key in theMap._map) {
             var wall = theMap._map[key];

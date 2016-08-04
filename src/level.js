@@ -1,4 +1,8 @@
 var VISIBILITY_RANGE = 20;
+var CHANCE_GOLD_FLOOR = 0;
+var CAVE_WIDTH = 50;
+var CAVE_HEIGHT = 50;
+var CAVE_FILL = 0.6 ; // 0.35; //0.52;
 
 var Level = function () {
 	/* FIXME data structure for storing entities */
@@ -6,7 +10,7 @@ var Level = function () {
     this._things = {};
 
 	/* FIXME map data */
-	this._size = new XY(80, 25);
+	this._size = new XY(CAVE_WIDTH, CAVE_HEIGHT);
 	this._map = {};
 	this._fovRange = {};
 
@@ -17,7 +21,7 @@ var Level = function () {
 
 Level.prototype.createMap = function() {
 	var generator = new ROT.Map.Cellular(this._size.x, this._size.y);
-	generator.randomize(0.52);
+	generator.randomize(CAVE_FILL);
 	var theMap = this;
 	generator.create(function (x,y,value) {
 		if (value == 1) {
@@ -37,7 +41,7 @@ Level.prototype.createMap = function() {
 				wall._goldChance = Math.min(1, Math.max(0, ROT.RNG.getNormal(0.7, 0.3)));
 				wall._updateVisual();
 			} else {
-				if (ROT.RNG.getUniform() < 0.3) {
+				if (ROT.RNG.getUniform() < CHANCE_GOLD_FLOOR) {
 					var gold = new Treasure("%");
 					theMap.addThing(gold, xy);
 				}
@@ -160,6 +164,9 @@ Level.prototype.isWithinBounds = function(xy) {
 
 Level.prototype.canWalkOn = function(xy, entity) {
     var otherEntity = this.getEntityAt(xy);
+    if (otherEntity) {
+//        console.log("entity "+(entity?entity.name:"(null)")+" found "+otherEntity.getVisual().ch+". Blocks: "+otherEntity.blocksMovementOf(entity));
+    }
     if (otherEntity && otherEntity.blocksMovementOf(entity))
         return false;
     

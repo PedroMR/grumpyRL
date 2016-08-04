@@ -69,8 +69,9 @@ Player.prototype.handleEvent = function(e) {
 
 Player.prototype.setPosition = function(xy, level) {
 	var entityThere = level.getEntityAt(xy);
-	if (entityThere && entityThere != level._empty) {
-        Game.gotGold(1);
+	if (entityThere && entityThere instanceof Treasure) {
+        Game.gotGold(1); //FIXME amounts
+        level.removeThing(entityThere);
 	}
 	
 	Being.prototype.setPosition.call(this, xy, level);

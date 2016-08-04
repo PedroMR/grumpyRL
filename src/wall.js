@@ -19,7 +19,7 @@ Wall.prototype.dig = function() {
 			
 			if (ROT.RNG.getUniform() < this._goldChance) {
 				var ore = new Treasure("*");
-				this._level.setEntity(ore, this.getXY());
+				this._level.addThing(ore, this.getXY());
 			}
 		}
 		this._updateVisual();

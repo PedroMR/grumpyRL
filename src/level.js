@@ -39,7 +39,7 @@ Level.prototype.createMap = function() {
 			} else {
 				if (ROT.RNG.getUniform() < 0.3) {
 					var gold = new Treasure("%");
-					theMap.setEntity(gold, xy);
+					theMap.addThing(gold, xy);
 				}
 			}
 		}
@@ -178,7 +178,7 @@ Level.prototype.canDigAt = function(xy, entity) {
 	return wall;
 }
 
-Level.prototype.addThing = function(xy, thing) {
+Level.prototype.addThing = function(thing, xy) {
 	if (!this.isWithinBounds(xy)) {
 		return false;
 	}
@@ -188,6 +188,7 @@ Level.prototype.addThing = function(xy, thing) {
         this._things[xy] = things;
     }
     things.push(thing);
+    thing.setPosition(xy, this);
 }
 
 Level.prototype.getThingsAt = function(xy) {
@@ -197,3 +198,17 @@ Level.prototype.getThingsAt = function(xy) {
     
     return this._things[xy];
 }
+
+Level.prototype.removeThing = function(thing) {
+    var pos = thing.getXY();
+    var things = this.getThingsAt(pos);
+    if (things) {
+        var index = things.indexOf(thing);
+        if (index >= 0)
+            things.splice(index,1);
+    }
+    else {
+        console.warn("No things found at "+pos);
+    }
+}
+

@@ -170,7 +170,7 @@ var Game = {
     
     onDeath: function(entity) {
         var corpse = new Corpse(entity._visual.ch, entity.name);
-        this.level.setEntity(corpse, entity.getXY());
+        this.level.addThing(corpse, entity.getXY());
         this.level.removeEntity(entity);
 
         if (entity instanceof Dwarf) {        

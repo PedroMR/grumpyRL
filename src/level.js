@@ -120,6 +120,10 @@ Level.prototype.setPlayerEntity = function(player) {
     this._player = player;
 }
 
+Level.prototype.getPlayerEntity = function() {
+    return this._player;
+}
+
 Level.prototype.computeFOV = function() {				
 	/* output callback */
     var xy = this._player._xy;

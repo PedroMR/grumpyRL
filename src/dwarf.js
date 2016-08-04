@@ -32,29 +32,41 @@ Dwarf.prototype.act = function() {
     var gold = this._goldTarget;
     var me = this;
 //	Game.textBuffer.write("Dwarf at "+this._xy+" sees gold at "+gold);
+    var passableCallback = level._dwarfMayMoveCb;
     if (gold) {
-        var passableCallback = level._dwarfMayMoveCb;
+        this._visual.fg = "#FF0";
         var nav = new ROT.Path.AStar(gold.x, gold.y, passableCallback, {topology:8});
         var count = 0;
         nav.compute(myPos.x, myPos.y, function(x,y) {
             count++;
             if (count == 2) {
                 var newPos = new XY(x, y);
-//                Game.textBuffer.write("Moving to "+newPos);
                 me.moveOrDigTo(newPos);
-//                level.setEntity(me, newPos);
-//                me.setPosition(, level);
             }
         });
 
     } else {
-        this.timeToIdleMove--;
-        if (this.timeToIdleMove <= 0) {
-            this.timeToIdleMove = ROT.RNG.getUniformInt(3, 7);;
-            var newPos = new XY(myPos.x, myPos.y);
-            newPos.x += ROT.RNG.getUniformInt(-1, 1);
-            newPos.y += ROT.RNG.getUniformInt(-1, 1);
-            me.moveOrDigTo(newPos);
+        var playerPos = this._level.getPlayerEntity().getXY();
+        if (playerPos.dist8(myPos) > 5) {
+            this._visual.fg = "#5FD";
+            var nav = new ROT.Path.AStar(playerPos.x, playerPos.y, passableCallback, {topology:8});
+            var count = 0;
+            nav.compute(myPos.x, myPos.y, function(x,y) {
+                count++;
+                if (count == 2) {
+                    var newPos = new XY(x, y);
+                    me.moveOrDigTo(newPos);
+                }
+            });
+        } else {
+            this.timeToIdleMove--;
+            if (this.timeToIdleMove <= 0) {
+                this.timeToIdleMove = ROT.RNG.getUniformInt(1, 4);;
+                var newPos = new XY(myPos.x, myPos.y);
+                newPos.x += ROT.RNG.getUniformInt(-1, 1);
+                newPos.y += ROT.RNG.getUniformInt(-1, 1);
+                me.moveOrDigTo(newPos);
+            }
         }
     }
     

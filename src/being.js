@@ -62,7 +62,6 @@ Being.prototype.moveOrDigTo = function(targetXY) {
                 var dmg = this._damage;
                 Game.textBuffer.write(this.name+" attacks "+entity.name+" for "+dmg+" damage!");
                 entity.sufferDamage(dmg);
-                console.log("attack!");
                 redrawNeeded = true;            
             } else if (this._canPush && sameTeam) {
                 var delta = targetXY.minus(this.getXY());
@@ -99,5 +98,5 @@ Being.prototype.sufferDamage = function(amount) {
 }
 
 Being.prototype.blocksMovementOf = function(otherEntity) {
-    return true;
+    return this != otherEntity;
 }

@@ -55,10 +55,15 @@ Level.prototype.createMap = function() {
 		return true;
     }
 
-    this._dwarfMayMoveCb = function(x, y) {
-		var key = new XY(x,y);
-		if (key in theMap._map) { return theMap.canWalkOn(key); }
-		return true;
+    this._dwarfMayMoveCb = function(me, x, y) {
+        var pos = new XY(x,y);
+        if (!theMap.isWithinBounds(pos))
+            return false;
+        var entity = theMap.getEntityAt(pos);
+        var mayWalk = !entity.blocksMovementOf(me);
+//        if (entity instanceof Dwarf && entity.name != me.name)
+//            console.log(me.name+": entity "+entity.name+" blocks? "+entity.blocksMovementOf(me)+" may "+mayWalk);
+        return mayWalk;
     }
 
     this._goblinMayMoveCb = function(x, y) {

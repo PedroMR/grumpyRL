@@ -38,10 +38,10 @@ Dwarf.prototype.act = function() {
     var gold = this._goldTarget;
     var me = this;
 //	Game.textBuffer.write("Dwarf at "+this._xy+" sees gold at "+gold);
-    var passableCallback = level._dwarfMayMoveCb;
+    var passableCallback = level._dwarfMayMoveCb.bind(this, this);
     if (gold && !hasSufferedDamage) {
         this._visual.fg = "#FF0";
-        var nav = new ROT.Path.Dijkstra(gold.x, gold.y, passableCallback, {topology:8});
+        var nav = new ROT.Path.AStar(gold.x, gold.y, passableCallback, {topology:8});
         var count = 0;
         this.debugPath.length = 0;
         nav.compute(myPos.x, myPos.y, function(x,y) {
@@ -88,7 +88,6 @@ Dwarf.prototype.debugRender = function() {
 	    // console.log("draw ", Game.viewportCenter, Game.viewportSize, pos, dx, dy);
 	    var entity = this._level.getEntityAt(pos);
 	    var ch = entity.getVisual().ch;
-	    console.log("ch "+ch);
 	    Game.display.draw(dx, dy, ch, '#000', '#800');
 	}
 }

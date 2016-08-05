@@ -9,6 +9,7 @@ var Dwarf = function(letter, name) {
     this._sufferedDamage = false;
     this.name = name || "Dwarf";
     this._team = TEAM_PLAYER;
+    this.debugPath = [];
 
 };
 Dwarf.extend(Being);
@@ -42,17 +43,14 @@ Dwarf.prototype.act = function() {
         this._visual.fg = "#FF0";
         var nav = new ROT.Path.Dijkstra(gold.x, gold.y, passableCallback, {topology:8});
         var count = 0;
+        this.debugPath.length = 0;
         nav.compute(myPos.x, myPos.y, function(x,y) {
+        	me.debugPath.push(new XY(x,y));
+
             count++;
             if (count == 2) {
                 var newPos = new XY(x, y);
                 me.moveOrDigTo(newPos);
-            }
-            
-            if (Game.debugSelectedDwarf == this) {
-                var dx = x + Game.viewportSize.x/2 - Game.viewportCenter.x;
-                var dy = y + Game.viewportSize.y/2 - Game.viewportCenter.y;
-                Game.display.draw(dx, dy, '', '', '#800');
             }
         });
 
@@ -79,11 +77,20 @@ Dwarf.prototype.act = function() {
                 me.moveOrDigTo(newPos);
             }
         }
-    }
-    
-    
-    
-    
+    }    
+}
+
+Dwarf.prototype.debugRender = function() {
+	for (var i = 0; i < this.debugPath.length; i++) {	
+		var pos = this.debugPath[i];
+		var dx = pos.x + Game.viewportSize.x/2 - Game.viewportCenter.x;
+	    var dy = pos.y + Game.viewportSize.y/2 - Game.viewportCenter.y;
+	    // console.log("draw ", Game.viewportCenter, Game.viewportSize, pos, dx, dy);
+	    var entity = this._level.getEntityAt(pos);
+	    var ch = entity.getVisual().ch;
+	    console.log("ch "+ch);
+	    Game.display.draw(dx, dy, ch, '#000', '#800');
+	}
 }
 
 Dwarf.prototype.sufferDamage = function (amount) {

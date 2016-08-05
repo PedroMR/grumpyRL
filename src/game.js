@@ -13,6 +13,8 @@ var Game = {
 	hasSeen: null,
     viewportCenter: null,
     viewportSize: null,
+    debugDwarf: null,
+    liveDwarves: null,
     dwarves: 6,
 	gold: 0,
 	
@@ -58,12 +60,13 @@ var Game = {
 				this.level.setEntity(this.player, playerXY);
                 this.viewportCenter = playerXY;
 				
-                level.addThing(playerXY, new Corpse("p", "Ppppp"));
+                this.liveDwarves = [];
                 
                 var names = ["Sleepy", "Dopey", "Doc", "Bashful", "Sneezy", "Happy"];
                 var letters = "SODBNH";
                 for (var n=0; n < this.dwarves; n++) {
                     var dwarf = new Dwarf(letters[n], names[n]);
+                    this.liveDwarves.push(dwarf);
                     var pos = level.findOpenSpot();
                     var tries = 1000;
                     while (pos.dist4(playerXY) > 8 && tries-- > 0)
@@ -114,6 +117,12 @@ var Game = {
 				fgColor = ROT.Color.toHex(rgb2);
 			}
 			var bgColor = visual.bg;
+
+			if (entity == this.debugDwarf) {
+				bgColor = '#FFF';
+				fgColor = '#000';
+			}
+
 			this.display.draw(drawX, drawY, visual.ch, fgColor, bgColor);
 		} else {
             this.display.draw(drawX, drawY, " ");
@@ -135,6 +144,10 @@ var Game = {
 				xy.y = j + this.viewportCenter.y - Math.floor(this.viewportSize.y/2);
 				this.draw(xy);
 			}
+		}
+
+		if (this.debugDwarf) {
+			this.debugDwarf.debugRender();
 		}
 
 	},
@@ -182,6 +195,25 @@ var Game = {
             }
         }
 
+    },
+
+    debugSelectNextDwarf: function() {
+    	if (this.debugDwarf == null) {
+    		this.debugDwarf = this.liveDwarves[0];
+    	} else {
+    		var index = this.liveDwarves.indexOf(this.debugDwarf);
+    		index++;
+    		if (index >= this.liveDwarves.length) {
+    			this.debugDwarf = null;
+    			this.textBuffer.write("No dwarf selected.");
+    			return;
+    		}
+    		this.debugDwarf = this.liveDwarves[index];
+    	}
+
+    	if (this.debugDwarf) {
+    		this.textBuffer.write("Dwarf selected: "+this.debugDwarf.name);    		
+    	}
     }
 }
 

@@ -1,7 +1,7 @@
 var VISIBILITY_RANGE = 20;
 var CHANCE_GOLD_FLOOR = 0;
-var CAVE_WIDTH = 50;
-var CAVE_HEIGHT = 50;
+var CAVE_WIDTH = 100;
+var CAVE_HEIGHT = 40;
 var CAVE_FILL = 0.6 ; // 0.35; //0.52;
 
 var Level = function () {

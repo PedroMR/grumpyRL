@@ -1,4 +1,5 @@
 var DWARF_GOLD_VISIBILITY = 8;
+var DWARF_PAIN_MEMORY = 4;
 
 var Dwarf = function(letter, name) {
     letter = letter || 'D';
@@ -6,7 +7,7 @@ var Dwarf = function(letter, name) {
     this.timeToIdleMove = ROT.RNG.getUniformInt(3, 7);
     this._fov = null;
     this._canDig = true;
-    this._sufferedDamage = false;
+    this._sufferedDamage = 0;
     this.name = name || "Dwarf";
     this._team = TEAM_PLAYER;
     this.debugPath = [];
@@ -18,8 +19,10 @@ Dwarf.prototype.blocksMovementOf = function(ent) {
     return Being.prototype.blocksMovementOf.call(this, ent);
 }
 Dwarf.prototype.act = function() {
-    var hasSufferedDamage = this._sufferedDamage;
-    this._sufferedDamage = false;
+    var hasSufferedDamage = this._sufferedDamage > 0;
+    if (this._sufferedDamage > 0) {
+        this._sufferedDamage--;  
+    } 
     this._visual.bg = "#000";
     this._visual.fg = "#5f5";
     
@@ -93,7 +96,7 @@ Dwarf.prototype.debugRender = function() {
 }
 
 Dwarf.prototype.sufferDamage = function (amount) {
-    this._sufferedDamage = true;
+    this._sufferedDamage = DWARF_PAIN_MEMORY;
     this._visual.bg = "#F55";
     
     Being.prototype.sufferDamage.call(this, amount);    

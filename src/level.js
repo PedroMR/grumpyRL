@@ -31,6 +31,28 @@ Level.prototype.createMap = function() {
 			wall.setPosition(xy, theMap);
 		}
 	});
+    
+    for (var i=0; i < 2; i++) {
+        var x0 = Math.floor(i*this._size.x/2);
+        var y0 = 0;
+        var roomOptions = {
+            roomWidth: [3, 5],
+            roomHeight: [3, 5],
+            corridorLength: [2, 6],
+            dugPercentage: 0.2
+        }
+        var roomGen = new ROT.Map.Digger(Math.floor(this._size.x/3), this._size/2, roomOptions);
+        roomGen.create(function (x, y, wall) {
+            var xy = new XY(x + x0, y + y0);
+            if (wall == 0) {
+                delete theMap._map[xy];
+            }
+            else if (theMap._map[xy]) {
+                theMap._map[xy]._visual.bg = '#226';
+                theMap._map[xy]._visual.ch = '8';
+            }
+        });
+    }
 	
 	generator.randomize(0.4);
 	generator.create(function (x,y,ore) {

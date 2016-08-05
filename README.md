@@ -5,7 +5,7 @@ grumpyRL
 
 = TODO
 
-* suffer pain as counter not flag
+* Grumpy doesn't mine gold
 * HP bars for Dwarves
 * proper entrance into the mine
 * game cycle
@@ -13,7 +13,7 @@ grumpyRL
 * Other abilities?
 ** sprint
 * goblins chase previous location of dwarves
-* goblin dig?
+* goblins dig?
 * goblin spawning
 * "Next level"?
 * classes for dwarves
@@ -22,3 +22,8 @@ grumpyRL
 ** Healer (Doc)
 ** Random? Scout? (Dopey)
 * perks/flaws for individuals
+
+
+== Done
+
+* suffer pain as counter not flag

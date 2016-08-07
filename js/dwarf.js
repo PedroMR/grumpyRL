@@ -1,5 +1,6 @@
 var DWARF_GOLD_VISIBILITY = 8;
 var DWARF_PAIN_MEMORY = 4;
+var DWARF_IDLE_AT_DISTANCE = 2;
 
 var Dwarf = function(letter, name) {
     letter = letter || 'D';
@@ -59,7 +60,7 @@ Dwarf.prototype.act = function() {
 
     } else {
         var playerPos = this._level.getPlayerEntity().getXY();
-        if (playerPos.dist8(myPos) > 5 || hasSufferedDamage) {
+        if (playerPos.dist8(myPos) > DWARF_IDLE_AT_DISTANCE || hasSufferedDamage) {
             this._visual.fg = "#5FD";
             var nav = new ROT.Path.AStar(playerPos.x, playerPos.y, passableCallback, {topology:8});
             var count = 0;

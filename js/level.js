@@ -73,6 +73,8 @@ Level.prototype.createMap = function() {
 	
     this._lightPassesCb = function(x, y) {
 		var key = new XY(x,y);
+        if (!theMap.isWithinBounds(key))
+            return false;
 		if (key in theMap._map) { return (theMap._map == theMap._empty); }
 		return true;
     }

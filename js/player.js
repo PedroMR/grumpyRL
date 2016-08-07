@@ -1,7 +1,7 @@
 var Player = function() {
 	Being.call(this, {ch:"@", fg:"#fff"});
 	
-    this._speed = 200;
+    this._speed = 100;
     this._canDig = true;
     this._canAttack = true;
     this.name = "Grumpy";

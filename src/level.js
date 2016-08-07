@@ -1,7 +1,7 @@
 var VISIBILITY_RANGE = 20;
 var CHANCE_GOLD_FLOOR = 0;
-var CAVE_WIDTH = 100;
-var CAVE_HEIGHT = 40;
+var CAVE_WIDTH = 120;
+var CAVE_HEIGHT = 60;
 var CAVE_FILL = 0.6 ; // 0.35; //0.52;
 
 var Level = function () {
@@ -36,9 +36,9 @@ Level.prototype.createMap = function() {
         var x0 = Math.floor(i*this._size.x/2);
         var y0 = 0;
         var roomOptions = {
-            roomWidth: [3, 5],
+            roomWidth: [3, 7],
             roomHeight: [3, 5],
-            corridorLength: [2, 6],
+            corridorLength: [2, 10],
             dugPercentage: 0.2
         }
         var roomGen = new ROT.Map.Digger(Math.floor(this._size.x/3), this._size/2, roomOptions);

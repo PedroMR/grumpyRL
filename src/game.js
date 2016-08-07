@@ -75,6 +75,7 @@ var Game = {
                 }
                 HUD.setDwarves(this.dwarves);
                 
+                var numGoblins = Math.floor(size.x*size.y/13); //16
                 for (var n=0; n <= 16; n++) {
                     var goblin = new Goblin();
                     var pos = level.findOpenSpot();

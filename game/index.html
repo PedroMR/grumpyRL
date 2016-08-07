@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		
+		<title>GrumpyRL</title>
+		<link rel="icon" 
+		      type="image/jpg" 
+		      href="http://media-cache-ec0.pinimg.com/45x45/86/10/90/86109017f3ffe03faa164290117d4dff.jpg">		
+
+		<script type="text/javascript" src="js/rot.js"></script>
+		<script type="text/javascript" src="js/xy.js"></script>
+		<script type="text/javascript" src="js/entity.js"></script>
+		<script type="text/javascript" src="js/being.js"></script>
+		<script type="text/javascript" src="js/treasure.js"></script>
+		<script type="text/javascript" src="js/wall.js"></script>
+		<script type="text/javascript" src="js/player.js"></script>
+		<script type="text/javascript" src="js/level.js"></script>
+		<script type="text/javascript" src="js/textbuffer.js"></script>
+		<script type="text/javascript" src="js/hud.js"></script>
+		<script type="text/javascript" src="js/scrolldisplay.js"></script>
+		<script type="text/javascript" src="js/dwarf.js"></script>
+		<script type="text/javascript" src="js/goblin.js"></script>
+		<script type="text/javascript" src="js/corpse.js"></script>
+		<script type="text/javascript" src="js/game.js"></script>
+		<script>Game.init();</script>
+        
+        <style>
+#grumpy {
+    background-image: url(img/Grumpy2.png);
+    background-size: 400px;
+    background-repeat: no-repeat;
+    background-position: right top;
+    width: 400px;
+    height: 1000px;
+    position: absolute;
+    float: right;
+    right: 0px;
+    z-index: -1;
+        
+}
+            
+#HUD {
+    background-color: white;
+    float:right;
+}
+                
+        </style>
+	</head>
+	<body>
+        <div id="grumpy"></div>
+        <div id="HUD">
+            <span id="gold">Gold: 0</span>
+            <span id="dwarves">Gold: 0</span>
+        </div>
+		<!--img style="float:right;  width: 400px" src="../img/Grumpy2.png"/-->
+
+	</body>
+</html>

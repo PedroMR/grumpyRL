@@ -11,6 +11,7 @@ var Level = function () {
 
 	/* FIXME map data */
 	this._size = new XY(CAVE_WIDTH, CAVE_HEIGHT);
+    this._usableArea = new XY(CAVE_WIDTH, CAVE_HEIGHT - 3);
 	this._map = {};
 	this._fovRange = {};
 
@@ -20,8 +21,8 @@ var Level = function () {
 }
 
 Level.prototype.createMap = function() {
-    var width = this._size.x;
-    var height = this._size.y - 3;
+    var width = this._usableArea.x;
+    var height = this._usableArea.y;
 	var generator = new ROT.Map.Cellular(width, height);
 	generator.randomize(CAVE_FILL);
 	var theMap = this;
@@ -56,7 +57,7 @@ Level.prototype.createMap = function() {
         });
     }
 	
-	generator.randomize(0.3);
+	generator.randomize(0.32);
 	generator.create(function (x,y,ore) {
 		if (ore == 1) {
 			var xy = new XY(x,y);
@@ -108,8 +109,8 @@ Level.prototype.getSize = function() {
 Level.prototype.findOpenSpot = function() {
 	var xy = new XY();
 	for (k=0; k < 1000; k++) {
-		xy.x = Math.floor(ROT.RNG.getUniform() * this._size.x);
-		xy.y = Math.floor(ROT.RNG.getUniform() * this._size.y);
+		xy.x = Math.floor(ROT.RNG.getUniform() * this._usableArea.x);
+		xy.y = Math.floor(ROT.RNG.getUniform() * this._usableArea.y);
 		
 		if (this.isEmpty(xy) && this.getEntityAt(xy) == this._empty) {
 			return xy;
@@ -251,11 +252,11 @@ Level.prototype.removeThing = function(thing) {
 }
 
 Level.prototype.getPlayerStart = function() {
-    var width = this._size.x;
-    var height = this._size.y;
+    var width = this._usableArea.x;
+    var height = this._usableArea.y;
     var margin = Math.floor(width / 8);
     var x0 = ROT.RNG.getUniformInt(margin, width-margin);
-    var y0 = height - 5;
+    var y0 = height - 2;
     
     this.openCaveMouth(x0, y0);
     

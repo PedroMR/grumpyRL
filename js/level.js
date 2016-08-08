@@ -20,7 +20,9 @@ var Level = function () {
 }
 
 Level.prototype.createMap = function() {
-	var generator = new ROT.Map.Cellular(this._size.x, this._size.y);
+    var width = this._size.x;
+    var height = this._size.y - 3;
+	var generator = new ROT.Map.Cellular(width, height);
 	generator.randomize(CAVE_FILL);
 	var theMap = this;
 	generator.create(function (x,y,value) {
@@ -33,7 +35,7 @@ Level.prototype.createMap = function() {
 	});
     
     for (var i=0; i < 2; i++) {
-        var x0 = Math.floor(i*this._size.x/2);
+        var x0 = Math.floor(i*width/2);
         var y0 = 0;
         var roomOptions = {
             roomWidth: [3, 7],
@@ -41,7 +43,7 @@ Level.prototype.createMap = function() {
             corridorLength: [2, 10],
             dugPercentage: 0.2
         }
-        var roomGen = new ROT.Map.Digger(Math.floor(this._size.x/3), this._size/2, roomOptions);
+        var roomGen = new ROT.Map.Digger(Math.floor(width/3), height/2, roomOptions);
         roomGen.create(function (x, y, wall) {
             var xy = new XY(x + x0, y + y0);
             if (wall == 0) {
@@ -54,7 +56,7 @@ Level.prototype.createMap = function() {
         });
     }
 	
-	generator.randomize(0.4);
+	generator.randomize(0.3);
 	generator.create(function (x,y,ore) {
 		if (ore == 1) {
 			var xy = new XY(x,y);
@@ -246,5 +248,39 @@ Level.prototype.removeThing = function(thing) {
     else {
         console.warn("No things found at "+pos);
     }
+}
+
+Level.prototype.getPlayerStart = function() {
+    var width = this._size.x;
+    var height = this._size.y;
+    var margin = Math.floor(width / 8);
+    var x0 = ROT.RNG.getUniformInt(margin, width-margin);
+    var y0 = height - 5;
+    
+    this.openCaveMouth(x0, y0);
+    
+    return new XY(x0, y0);
+}
+
+Level.prototype.openCaveMouth = function(x0, y0) {
+    var width = this._size.x;
+    var height = this._size.y;
+    var CAVE_MOUTH_RADIUS = 8;
+    var bottom = new XY(x0, height-1);
+    
+    var i = 0;
+    var pos = new XY(0,0);
+    for (var v = height - 1; v >= y0 - 5; v--, i++) {
+        for (var u = x0 - CAVE_MOUTH_RADIUS; u < x0 + CAVE_MOUTH_RADIUS; u++) {
+            pos.x = u; pos.y = v;
+            if (pos.dist(bottom) < CAVE_MOUTH_RADIUS) {                
+                delete this._map[pos];
+            }
+        }        
+    }
+    
+    delete this._map[new XY(x0, y0)];
+    
+    //return this.findOpenSpot();
 }
 

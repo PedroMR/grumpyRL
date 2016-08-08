@@ -54,8 +54,9 @@ var Game = {
 				var size = level.getSize();
 				this._switchLevel(level);
                 
-				var playerXY = level.findOpenSpot();
-                
+//				var playerXY = level.findOpenSpot();
+                var playerXY = level.getPlayerStart();
+
                 this.level.setPlayerEntity(this.player);
 				this.level.setEntity(this.player, playerXY);
                 this.viewportCenter = playerXY;
@@ -196,6 +197,10 @@ var Game = {
             }
         }
 
+    },
+    
+    tryTriggerYell: function() {
+        //TODO //FIXME
     },
 
     debugSelectNextDwarf: function() {
